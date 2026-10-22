@@ -6,12 +6,15 @@ React, TypeScript, and Vite frontend for the Case Continuity Engine. The interfa
 
 ```powershell
 npm install
+Copy-Item .env.example .env
 npm run dev
 ```
 
 Open `http://localhost:6006/dashboard`.
 
 In VS Code, you can also run **Tasks: Run Task → Start CaseMind dashboard**.
+
+The example environment enables the interactive seeded demo (`VITE_DEMO_MODE=true`), so no backend is needed for the walkthrough. Demo state is held in the frontend mock service and is never written to a database.
 
 ## Demo path
 
@@ -26,15 +29,25 @@ All displayed customer, case, action, outcome, and escalation state comes from t
 
 ## Backend API
 
-The frontend expects the backend described in [`Docs/00_SHARED_CONTRACT.md`](./Docs/00_SHARED_CONTRACT.md) to be running at `http://localhost:3000/api/v1`. Start the backend and seed its three demo customers before using the support and case views. The browser does not call the AI service directly.
+To use the real backend, set `VITE_DEMO_MODE=false` in `.env`. The frontend then uses the API described in [`Docs/00_SHARED_CONTRACT.md`](./Docs/00_SHARED_CONTRACT.md), defaulting to `http://localhost:3000/api/v1`. Start the backend and seed its three demo customers before using support and case views. The browser does not call the AI service directly.
 
-To use another API base URL, set `VITE_API_BASE_URL` in a local `.env` file, for example:
+To use another API base URL, set `VITE_API_BASE_URL` in `.env`, for example:
 
 ```dotenv
 VITE_API_BASE_URL=http://localhost:3000/api/v1
 ```
 
 If the API is unavailable, the interface displays an error and does not substitute fabricated case or metric data.
+
+Vite loads `.env` when the development server starts. Restart `npm run dev` after changing demo mode or the API URL.
+
+## Seeded demo walkthrough
+
+- **Aarav Sharma:** Open Support to see the first router restart recommendation. Mark it failed to see the cable check appear while the failed step stays in history.
+- **Priya Das:** Select Priya to see the previous failed router restart and current cable check. Starting another chat increments her contact count; a third contact escalates before another step.
+- **Rohan Mehta:** Select Rohan to inspect the third-contact escalation, failed action history, and simulated handoff. There is no active troubleshooting action.
+- Send an unrelated message in an active conversation to see the internet-support scope response. Responses in demo mode are deterministic; no live AI classification or ISP operation is performed.
+- Use **Reset demo** on the Overview page and confirm to restore the original customers, cases, action ledger, and activity.
 
 ## Offline tests and build
 
@@ -55,7 +68,7 @@ docker run --rm -p 6006:80 casemind-frontend
 The API base URL is compiled into the frontend. Override it for a deployed API with:
 
 ```powershell
-docker build --build-arg VITE_API_BASE_URL=https://api.example.com/api/v1 -t casemind-frontend .
+docker build --build-arg VITE_DEMO_MODE=true --build-arg VITE_API_BASE_URL=https://api.example.com/api/v1 -t casemind-frontend .
 ```
 
 Only public API URLs belong in frontend build arguments; never put private credentials or LLM API keys in browser-visible configuration.

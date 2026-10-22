@@ -41,13 +41,20 @@ function ActionStatus({ status }: { status: SupportAction['status'] }) {
 
 interface ActionCardProps {
   action: SupportAction | null
+  history: SupportAction[]
   hasSession: boolean
   caseStatus: string | null
   pending: boolean
   onOutcome: (outcome: ActionOutcome) => void
 }
 
-export function ActionCard({ action, hasSession, caseStatus, pending, onOutcome }: ActionCardProps) {
+function formatTimestamp(value: string): string {
+  const date = new Date(value)
+  if (Number.isNaN(date.getTime())) return 'Unknown time'
+  return new Intl.DateTimeFormat(undefined, { dateStyle: 'medium', timeStyle: 'short' }).format(date)
+}
+
+export function ActionCard({ action, history, hasSession, caseStatus, pending, onOutcome }: ActionCardProps) {
   const isTerminal = caseStatus !== null && ['escalated', 'resolved', 'closed'].includes(caseStatus)
   const activeAction = action && ACTIVE_ACTION_STATUSES.has(action.status) && !isTerminal ? action : null
 
@@ -75,7 +82,7 @@ export function ActionCard({ action, hasSession, caseStatus, pending, onOutcome 
           ) : null}
           {activeAction.status === 'unknown' ? (
             <p className="mt-3 rounded-sm border border-line bg-surface px-2.5 py-2 text-cell text-ink-secondary dark:border-line-dark dark:bg-surface-dark dark:text-ink-secondary-dark">
-              This action is still awaiting clarification. The backend has not advanced to a different step.
+              This action is awaiting clarification. No next step is recommended until its outcome is known.
             </p>
           ) : null}
           {hasSession && !isTerminal ? (
@@ -86,7 +93,7 @@ export function ActionCard({ action, hasSession, caseStatus, pending, onOutcome 
             </div>
           ) : null}
           <p className="mt-3 text-caption text-ink-muted dark:text-ink-muted-dark">
-            Outcome changes are recorded by the backend; the interface does not assume an action worked.
+            Outcomes are recorded immediately and only advance the case after you report what happened.
           </p>
         </div>
       ) : (
@@ -94,12 +101,34 @@ export function ActionCard({ action, hasSession, caseStatus, pending, onOutcome 
           {caseStatus === 'escalated'
             ? 'No further automated action is available for this escalated case.'
             : caseStatus === 'resolved'
-              ? 'The backend has resolved this case. No further action is pending.'
+              ? 'This case is resolved. No further action is pending.'
               : hasSession
                 ? 'No action is awaiting an outcome.'
-                : 'The current backend action will appear here after a support session starts.'}
+                : 'A current action will appear here after a support session starts.'}
         </p>
       )}
+      {history.length ? (
+        <div className="mt-5 border-t border-line-divider pt-4 dark:border-line-divider-dark">
+          <h3 className="text-caption font-semibold uppercase tracking-wide text-ink-muted dark:text-ink-muted-dark">Action history</h3>
+          <ol className="mt-3 space-y-3">
+            {[...history].sort((left, right) => left.stepOrder - right.stepOrder || Date.parse(left.recommendedAt) - Date.parse(right.recommendedAt)).map((entry) => (
+              <li key={entry.id} className="rounded-control border border-line bg-surface px-3 py-2.5 dark:border-line-dark dark:bg-surface-dark">
+                <div className="flex flex-wrap items-start justify-between gap-2">
+                  <p className="text-cell font-medium text-ink dark:text-ink-dark">{entry.label}</p>
+                  <ActionStatus status={entry.status} />
+                </div>
+                <p className="mt-1 text-caption text-ink-muted dark:text-ink-muted-dark">
+                  Recommended {formatTimestamp(entry.recommendedAt)}
+                  {entry.outcomeAt ? ` · Outcome ${formatTimestamp(entry.outcomeAt)}` : ''}
+                </p>
+                {entry.customerNote ? (
+                  <p className="mt-1 text-cell text-ink-secondary dark:text-ink-secondary-dark">{entry.customerNote}</p>
+                ) : null}
+              </li>
+            ))}
+          </ol>
+        </div>
+      ) : null}
     </section>
   )
 }

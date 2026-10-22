@@ -4,7 +4,8 @@ import { ArrowLeft } from 'lucide-react'
 import { ApiError } from '@/api/client'
 import { getCase, getCaseTimeline, getHandoffSummary, recordActionOutcome } from '@/api/cases'
 import { getCustomers } from '@/api/customers'
-import { createSession, sendMessage } from '@/api/sessions'
+import { createSession, getDemoWorkspace, sendMessage } from '@/api/sessions'
+import { DEMO_MODE } from '@/lib/config'
 import type {
   CaseDetail,
   CaseEvent,
@@ -91,6 +92,20 @@ export function SupportPage() {
     setLoadState('ready')
   }, [])
 
+  const loadDemoWorkspace = useCallback(async (customerId: string, caseId?: string) => {
+    const workspace = await getDemoWorkspace(customerId, caseId)
+    if (!workspace) return
+    setSelectedCustomerId(customerId)
+    setDetail(workspace.caseDetail)
+    setEvents(workspace.caseDetail?.events ?? [])
+    setSessionId(workspace.sessionId)
+    setMessages(workspace.messages)
+    setSessionEscalated(workspace.caseDetail?.status === 'escalated')
+    setHandoff(workspace.caseDetail?.status === 'escalated'
+      ? await getHandoffSummary(workspace.caseDetail.id)
+      : null)
+  }, [])
+
   useEffect(() => {
     caseRevision.current += 1
     const controller = new AbortController()
@@ -121,11 +136,37 @@ export function SupportPage() {
           if (nextCase.status === 'escalated') {
             setHandoff(await getHandoffSummary(routeCaseId, controller.signal))
           }
+          if (DEMO_MODE) {
+            const workspace = await getDemoWorkspace(nextCase.customerId, routeCaseId)
+            if (controller.signal.aborted) return
+            if (workspace) {
+              setSessionId(workspace.sessionId)
+              setMessages(workspace.messages)
+              setSessionEscalated(workspace.caseDetail?.status === 'escalated')
+              setDetail(workspace.caseDetail)
+              setEvents(workspace.caseDetail?.events ?? [])
+            }
+          }
         } else {
           const requestedCustomer = nextCustomers.find((item) => item.id === requestedCustomerId)
           const savedCustomerId = localStorage.getItem('casemind-customer')
           const savedCustomer = nextCustomers.find((item) => item.id === savedCustomerId)
-          setSelectedCustomerId((requestedCustomer ?? savedCustomer ?? nextCustomers[0])?.id ?? '')
+          const initialCustomer = (requestedCustomer ?? savedCustomer ?? nextCustomers[0])?.id ?? ''
+          setSelectedCustomerId(initialCustomer)
+          if (DEMO_MODE && initialCustomer) {
+            const workspace = await getDemoWorkspace(initialCustomer)
+            if (controller.signal.aborted) return
+            if (workspace) {
+              setDetail(workspace.caseDetail)
+              setEvents(workspace.caseDetail?.events ?? [])
+              setSessionId(workspace.sessionId)
+              setMessages(workspace.messages)
+              setSessionEscalated(workspace.caseDetail?.status === 'escalated')
+              setHandoff(workspace.caseDetail?.status === 'escalated' && workspace.caseDetail
+                ? await getHandoffSummary(workspace.caseDetail.id, controller.signal)
+                : null)
+            }
+          }
         }
         if (!controller.signal.aborted) setLoadState('ready')
       } catch (cause) {
@@ -289,7 +330,7 @@ export function SupportPage() {
 
   const controlsDisabled = pending !== null
   const caseClosed = sessionEscalated || (detail ? ['escalated', 'resolved', 'closed'].includes(detail.status) : false)
-  const shouldShowStartSession = loadState === 'ready' && !sessionId
+  const shouldShowStartSession = loadState === 'ready' && !sessionId && !caseClosed
 
   if (loadState === 'loading') {
     return <div className="p-6"><LoadingIndicator label="Loading customers and case history" /></div>
@@ -355,7 +396,6 @@ export function SupportPage() {
               selectedCustomerId={selectedCustomerId}
               onSelect={(customerId) => {
                 caseRevision.current += 1
-                setSelectedCustomerId(customerId)
                 setSessionId(null)
                 setDetail(null)
                 setEvents([])
@@ -365,9 +405,15 @@ export function SupportPage() {
                 setNotice(null)
                 setError(null)
                 localStorage.setItem('casemind-customer', customerId)
+                if (DEMO_MODE) {
+                  void loadDemoWorkspace(customerId).catch((cause: unknown) => setError(messageForError(cause)))
+                } else {
+                  setSelectedCustomerId(customerId)
+                }
               }}
               onStartChat={() => void beginSession()}
               disabled={Boolean(routeCaseId) || controlsDisabled}
+              startDisabled={caseClosed}
               starting={pending === 'session'}
               prominent={shouldShowStartSession}
               continueCase={Boolean(detail && shouldShowStartSession)}
@@ -409,6 +455,7 @@ export function SupportPage() {
         <aside className="min-w-0">
           <ActionCard
             action={activeAction}
+            history={detail?.actions ?? []}
             hasSession={Boolean(sessionId)}
             caseStatus={detail?.status ?? null}
             pending={controlsDisabled}

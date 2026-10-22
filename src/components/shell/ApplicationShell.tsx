@@ -3,6 +3,7 @@ import { Link, NavLink, Outlet, useLocation } from 'react-router-dom'
 import { LayoutDashboard, Menu, MessageCircle, X } from 'lucide-react'
 import { ThemeSwitch } from '@/components/ThemeSwitch'
 import { IconButton } from '@/components/shared/IconButton'
+import { DEMO_MODE } from '@/lib/config'
 import { cn } from '@/lib/cn'
 
 interface ApplicationShellProps {
@@ -71,6 +72,11 @@ export function ApplicationShell({ isDark, onToggleTheme }: ApplicationShellProp
           </nav>
 
           <div className="flex shrink-0 items-center gap-2">
+            {DEMO_MODE ? (
+              <span className="rounded-control border border-primary-200 bg-primary-50 px-2 py-1 text-caption font-semibold tracking-wide text-primary-800 dark:border-primary-800 dark:bg-primary-950 dark:text-primary-200">
+                DEMO MODE
+              </span>
+            ) : null}
             <ThemeSwitch isDark={isDark} onToggle={onToggleTheme} />
             <div className="md:hidden">
               <IconButton

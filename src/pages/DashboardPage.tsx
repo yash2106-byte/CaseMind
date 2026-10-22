@@ -1,10 +1,11 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { ArrowRight, CircleAlert, RefreshCw, Search } from 'lucide-react'
-import { getAllCases } from '@/api/cases'
+import { ArrowRight, CircleAlert, RefreshCw, RotateCcw, Search } from 'lucide-react'
+import { getAllCases, getCase } from '@/api/cases'
 import { getCustomers } from '@/api/customers'
-import { getDashboardMetrics } from '@/api/dashboard'
-import type { CaseSummary, Customer, DashboardMetrics } from '@/types/api'
+import { getDashboardMetrics, resetDemoState } from '@/api/dashboard'
+import { DEMO_MODE } from '@/lib/config'
+import type { CaseDetail, CaseSummary, Customer, DashboardMetrics } from '@/types/api'
 import { CaseStatusBadge } from '@/components/CaseStatusBadge'
 import { MetricCard } from '@/components/MetricCard'
 import { Button } from '@/components/shared/Button'
@@ -41,7 +42,7 @@ function formatDate(value: string): string {
 
 function CaseStatusBar({ metrics }: { metrics: DashboardMetrics }) {
   const distribution = [
-    { label: 'Active', count: metrics.openCases, className: 'bg-primary-500 dark:bg-primary-400' },
+    { label: 'In progress', count: metrics.openCases, className: 'bg-primary-500 dark:bg-primary-400' },
     { label: 'Resolved', count: metrics.resolvedCases, className: 'bg-secondary-400 dark:bg-secondary-500' },
     { label: 'Escalated', count: metrics.escalatedCases, className: 'bg-cost' },
   ]
@@ -92,6 +93,8 @@ export function DashboardPage() {
   const [customers, setCustomers] = useState<Customer[]>([])
   const [metrics, setMetrics] = useState<DashboardMetrics | null>(null)
   const [cases, setCases] = useState<CaseSummary[]>([])
+  const [details, setDetails] = useState<CaseDetail[]>([])
+  const [resetting, setResetting] = useState(false)
   const [customerId, setCustomerId] = useState('all')
   const [filter, setFilter] = useState<CaseFilter>('all')
   const [query, setQuery] = useState('')
@@ -108,10 +111,14 @@ export function DashboardPage() {
         getDashboardMetrics(signal),
       ])
       const nextCases = await getAllCases(nextCustomers, signal)
+      const nextDetails = DEMO_MODE
+        ? await Promise.all(nextCases.map((item) => getCase(item.id, signal)))
+        : []
       if (signal?.aborted) return
       setCustomers(nextCustomers)
       setMetrics(nextMetrics)
       setCases(nextCases)
+      setDetails(nextDetails)
       setStatus('ready')
     } catch (cause) {
       if (signal?.aborted) return
@@ -139,6 +146,19 @@ export function DashboardPage() {
     () => new Map(customers.map((customer) => [customer.id, customer.displayName])),
     [customers],
   )
+  const detailById = useMemo(
+    () => new Map(details.map((item) => [item.id, item])),
+    [details],
+  )
+  const recentActivity = useMemo(
+    () => details.flatMap((item) => item.events.map((event) => ({
+      ...event,
+      caseTitle: item.title,
+    })))
+      .sort((left, right) => Date.parse(right.createdAt) - Date.parse(left.createdAt))
+      .slice(0, 8),
+    [details],
+  )
 
   const visibleCases = useMemo(() => {
     const needle = query.trim().toLocaleLowerCase()
@@ -154,6 +174,8 @@ export function DashboardPage() {
         return [
           item.id,
           item.title,
+          detailById.get(item.id)?.problemSummary ?? '',
+          detailById.get(item.id)?.actions.find((action) => action.stepKey === item.currentStepKey)?.label ?? '',
           item.status,
           customerNames.get(item.customerId) ?? '',
         ].some((value) => value.toLocaleLowerCase().includes(needle))
@@ -184,6 +206,23 @@ export function DashboardPage() {
             <RefreshCw className="mr-2 size-3.5" aria-hidden="true" />
             Refresh
           </Button>
+          {DEMO_MODE ? (
+            <Button
+              variant="ghost"
+              onClick={() => {
+                if (!window.confirm('Reset all demo cases, conversations, and activity to their original state?')) return
+                setResetting(true)
+                void resetDemoState()
+                  .then(() => refresh())
+                  .catch((cause: unknown) => setError(displayError(cause)))
+                  .finally(() => setResetting(false))
+              }}
+              disabled={resetting}
+            >
+              <RotateCcw className="mr-2 size-3.5" aria-hidden="true" />
+              {resetting ? 'Resetting…' : 'Reset demo'}
+            </Button>
+          ) : null}
         </div>
       </section>
 
@@ -214,8 +253,8 @@ export function DashboardPage() {
         <>
           <section className="grid grid-cols-2 border-b border-line-divider dark:border-line-divider-dark sm:grid-cols-4" aria-label="Case metrics">
             <MetricCard label="Total cases" value={formatCount(metrics.totalCases)} note="All recorded support cases" />
-            <MetricCard label="Active cases" value={formatCount(metrics.openCases)} note="Open or in progress" />
-            <MetricCard label="Resolved" value={formatCount(metrics.resolvedCases)} note="Backend-confirmed resolution" tone="positive" />
+            <MetricCard label="In progress" value={formatCount(metrics.openCases)} note="Open or in progress" />
+            <MetricCard label="Resolved" value={formatCount(metrics.resolvedCases)} note="Cases confirmed as resolved" tone="positive" />
             <MetricCard
               label="Escalated"
               value={formatCount(metrics.escalatedCases)}
@@ -248,7 +287,7 @@ export function DashboardPage() {
               <div>
                 <h2 id="recent-cases-heading" className="text-card font-semibold text-ink dark:text-ink-dark">Recent cases</h2>
                 <p className="mt-1 text-cell text-ink-secondary dark:text-ink-secondary-dark">
-                  Canonical case state for the three seeded demo customers
+                  {DEMO_MODE ? 'Canonical case state for the three seeded demo customers' : 'Latest customer support cases'}
                 </p>
               </div>
               <label className="flex items-center gap-2 text-cell text-ink-secondary dark:text-ink-secondary-dark">
@@ -301,14 +340,16 @@ export function DashboardPage() {
             {pageCases.length ? (
               <>
                 <div className="overflow-x-auto">
-                  <table className="w-full min-w-[42rem] table-fixed text-left">
+                  <table className="w-full min-w-[68rem] table-fixed text-left">
                     <thead className="bg-header-sub text-caption font-medium text-ink-secondary dark:bg-header-sub-dark dark:text-ink-secondary-dark">
                       <tr className="h-9 border-b border-line-divider dark:border-line-divider-dark">
-                        <th className="w-[30%] px-4 sm:px-5">Case</th>
-                        <th className="w-[22%] px-3">Customer</th>
-                        <th className="w-[18%] px-3">Status</th>
-                        <th className="w-[18%] px-3">Last updated</th>
-                        <th className="w-[12%] px-4 text-right sm:px-5">Contact</th>
+                        <th className="w-[19%] px-4 sm:px-5">Case</th>
+                        <th className="w-[13%] px-3">Customer</th>
+                        <th className="w-[22%] px-3">Problem summary</th>
+                        <th className="w-[16%] px-3">Current action</th>
+                        <th className="w-[11%] px-3">Status</th>
+                        <th className="w-[11%] px-3">Latest activity</th>
+                        <th className="w-[8%] px-4 text-right sm:px-5">Contacts</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -318,14 +359,25 @@ export function DashboardPage() {
                             <Link to={`/cases/${encodeURIComponent(item.id)}`} className="group block min-w-0 rounded-sm">
                               <span className="block truncate font-medium text-ink group-hover:text-primary-700 dark:text-ink-dark dark:group-hover:text-primary-300">{item.title}</span>
                               <span className="mt-0.5 block truncate font-mono text-caption text-ink-muted dark:text-ink-muted-dark">{item.id}</span>
+                              <span className="mt-0.5 block text-caption font-medium text-primary-700 dark:text-primary-300">View case</span>
                             </Link>
                           </td>
                           <td className="truncate px-3 text-ink-secondary dark:text-ink-secondary-dark">{customerNames.get(item.customerId) ?? 'Unknown customer'}</td>
+                          <td className="px-3">
+                            <span className="block truncate text-ink-secondary dark:text-ink-secondary-dark" title={detailById.get(item.id)?.problemSummary}>
+                              {detailById.get(item.id)?.problemSummary ?? '—'}
+                            </span>
+                          </td>
+                          <td className="px-3 text-ink-secondary dark:text-ink-secondary-dark">
+                            <span className="block truncate">
+                              {detailById.get(item.id)?.actions.find((action) => action.stepKey === item.currentStepKey)?.label ?? 'No active action'}
+                            </span>
+                          </td>
                           <td className="px-3"><CaseStatusBadge status={item.status} /></td>
                           <td className="px-3 tabular-nums text-ink-secondary dark:text-ink-secondary-dark">{formatDate(item.updatedAt)}</td>
                           <td className="px-4 text-right tabular-nums text-ink dark:text-ink-dark sm:px-5">
                             <span className="inline-flex items-center justify-end gap-1">
-                              {formatCount(item.contactCount)}
+                              <span>{formatCount(item.contactCount)}</span>
                               <ArrowRight className="size-3 text-ink-muted" aria-hidden="true" />
                             </span>
                           </td>
@@ -351,6 +403,39 @@ export function DashboardPage() {
                 className="p-6"
                 action={cases.length ? { label: 'Clear search and filters', onClick: () => { setQuery(''); setFilter('all'); setCustomerId('all') } } : undefined}
               />
+            )}
+          </section>
+
+          <section className="border-t border-line-divider p-4 dark:border-line-divider-dark sm:p-5" aria-labelledby="recent-activity-heading">
+            <div className="flex flex-wrap items-baseline justify-between gap-2">
+              <h2 id="recent-activity-heading" className="text-card font-semibold text-ink dark:text-ink-dark">Recent activity</h2>
+              <p className="text-caption text-ink-muted dark:text-ink-muted-dark">
+                {DEMO_MODE ? 'Updates as demo cases change' : 'Latest case activity'}
+              </p>
+            </div>
+            {recentActivity.length ? (
+              <ol className="mt-4 divide-y divide-line-divider dark:divide-line-divider-dark">
+                {recentActivity.map((event) => (
+                  <li key={event.id} className="flex flex-wrap items-start justify-between gap-2 py-3 first:pt-0">
+                    <div className="min-w-0">
+                      <Link
+                        to={`/cases/${encodeURIComponent(event.caseId)}`}
+                        className="text-cell font-medium text-ink hover:text-primary-700 dark:text-ink-dark dark:hover:text-primary-300"
+                      >
+                        {event.message}
+                      </Link>
+                      <p className="mt-1 truncate text-caption text-ink-secondary dark:text-ink-secondary-dark">{event.caseTitle}</p>
+                    </div>
+                    <time className="shrink-0 text-caption tabular-nums text-ink-muted dark:text-ink-muted-dark" dateTime={event.createdAt}>
+                      {formatDate(event.createdAt)}
+                    </time>
+                  </li>
+                ))}
+              </ol>
+            ) : (
+              <p className="mt-3 text-cell text-ink-secondary dark:text-ink-secondary-dark">
+                No recent case activity is available.
+              </p>
             )}
           </section>
         </>

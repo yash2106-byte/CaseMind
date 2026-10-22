@@ -66,7 +66,7 @@ describe('SupportPage', () => {
     )
     renderSupport()
 
-    const selector = await screen.findByRole('combobox', { name: 'Demo customer' })
+    const selector = await screen.findByRole('combobox', { name: 'Customer' })
     expect(within(selector).getByRole('option', { name: 'Demo Customer 2' })).toBeInTheDocument()
     await user.selectOptions(selector, CUSTOMER_TWO)
     await user.click(screen.getByRole('button', { name: /start new chat/i }))
@@ -165,7 +165,7 @@ describe('SupportPage', () => {
     await sendFirstMessage(user)
     await user.click(await screen.findByRole('button', { name: 'Succeeded' }))
 
-    expect(await screen.findByText('The backend has resolved this case. No further action is pending.')).toBeInTheDocument()
+    expect(await screen.findByText('This case is resolved. No further action is pending.')).toBeInTheDocument()
     expect(screen.queryByRole('button', { name: 'Failed' })).not.toBeInTheDocument()
     expect(screen.queryByRole('button', { name: 'Not sure / Unknown' })).not.toBeInTheDocument()
   })
@@ -195,10 +195,10 @@ describe('SupportPage', () => {
     await sendFirstMessage(user)
     await user.click(await screen.findByRole('button', { name: 'Not sure / Unknown' }))
 
-    expect(await screen.findByText('This action is still awaiting clarification. The backend has not advanced to a different step.')).toBeInTheDocument()
+    expect(await screen.findByText('This action is awaiting clarification. No next step is recommended until its outcome is known.')).toBeInTheDocument()
     expect(screen.getByRole('heading', { name: firstAction.label })).toBeInTheDocument()
     expect(screen.queryByRole('heading', { name: nextAction.label })).not.toBeInTheDocument()
-    expect(screen.getByText('Needs clarification')).toBeInTheDocument()
+    expect(screen.getAllByText('Needs clarification').length).toBeGreaterThan(0)
   })
 
   it('shows third-contact escalation, failed step labels, contact count, and simulated handoff notice', async () => {
@@ -384,7 +384,7 @@ describe('SupportPage', () => {
     await sendFirstMessage(user)
     await waitFor(() => expect(caseRequests).toBeGreaterThan(0))
 
-    await user.selectOptions(screen.getByRole('combobox', { name: 'Demo customer' }), CUSTOMER_TWO)
+    await user.selectOptions(screen.getByRole('combobox', { name: 'Customer' }), CUSTOMER_TWO)
     await act(async () => releaseRefresh?.())
     await waitFor(() => expect(screen.queryByText(CASE_ID)).not.toBeInTheDocument())
     expect(screen.getByRole('heading', { name: 'Internet connectivity' })).toBeInTheDocument()

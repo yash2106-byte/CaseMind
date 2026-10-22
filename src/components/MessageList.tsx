@@ -1,6 +1,7 @@
 import { MessageSquareText } from 'lucide-react'
 import type { ChatMessage } from '@/types/chat'
 import { LoadingIndicator } from '@/components/shared/LoadingIndicator'
+import { DEMO_MODE } from '@/lib/config'
 import { cn } from '@/lib/cn'
 
 function formatDate(value: string): string {
@@ -22,7 +23,9 @@ export function MessageList({ messages, waiting }: MessageListProps) {
           <MessageSquareText className="size-5 text-ink-muted dark:text-ink-muted-dark" aria-hidden="true" />
           <p className="mt-3 text-body font-medium text-ink dark:text-ink-dark">How can we help with your connection?</p>
           <p className="mt-1 max-w-sm text-cell text-ink-secondary dark:text-ink-secondary-dark">
-            Describe what is happening. Case classification and troubleshooting are handled by the backend.
+            {DEMO_MODE
+              ? 'This demo uses deterministic simulated support responses. Describe what is happening with your internet connection.'
+              : 'Describe what is happening. Case classification and troubleshooting are handled by the backend.'}
           </p>
         </div>
       ) : null}

@@ -35,7 +35,19 @@ export function ChatPanel({
         <h2 className="text-card font-semibold text-ink dark:text-ink-dark">Conversation</h2>
         {sessionId ? <span className="text-caption text-ink-muted dark:text-ink-muted-dark">Session active</span> : null}
       </div>
-      {!sessionId ? (
+      <MessageList messages={messages} waiting={pending} />
+      {sessionId ? (
+        <>
+          <MessageComposer
+            draft={draft}
+            disabled={pending}
+            sending={pending}
+            onDraftChange={onDraftChange}
+            onSubmit={onSubmit}
+            caseStatus={closedStatus}
+          />
+        </>
+      ) : messages.length === 0 ? (
         <div className="flex flex-1 flex-col justify-center p-4 sm:p-5">
           <p className="text-body font-semibold text-ink dark:text-ink-dark">
             {hasExistingCase ? 'Continue the support conversation' : 'Start a support conversation'}
@@ -46,19 +58,7 @@ export function ChatPanel({
               : 'Choose one of the seeded demo customers, then start a chat to create a backend session.'}
           </p>
         </div>
-      ) : (
-        <>
-          <MessageList messages={messages} waiting={pending} />
-          <MessageComposer
-            draft={draft}
-            disabled={pending}
-            sending={pending}
-            onDraftChange={onDraftChange}
-            onSubmit={onSubmit}
-            caseStatus={closedStatus}
-          />
-        </>
-      )}
+      ) : null}
     </div>
   )
 }

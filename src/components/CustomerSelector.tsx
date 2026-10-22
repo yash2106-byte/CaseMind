@@ -7,6 +7,7 @@ interface CustomerSelectorProps {
   onSelect: (customerId: string) => void
   onStartChat: () => void
   disabled: boolean
+  startDisabled: boolean
   starting: boolean
   prominent: boolean
   continueCase: boolean
@@ -18,6 +19,7 @@ export function CustomerSelector({
   onSelect,
   onStartChat,
   disabled,
+  startDisabled,
   starting,
   prominent,
   continueCase,
@@ -25,7 +27,7 @@ export function CustomerSelector({
   return (
     <div className="flex flex-wrap items-end justify-between gap-3">
       <label className="grid min-w-48 flex-1 gap-1.5 text-caption font-medium uppercase text-ink-muted dark:text-ink-muted-dark">
-        Demo customer
+        Customer
         <select
           value={selectedCustomerId}
           onChange={(event) => onSelect(event.target.value)}
@@ -38,7 +40,7 @@ export function CustomerSelector({
           {!customers.length ? <option value="">No seeded customers</option> : null}
         </select>
       </label>
-      <Button variant={prominent ? 'solid' : 'outline'} onClick={onStartChat} disabled={!selectedCustomerId || disabled}>
+      <Button variant={prominent ? 'solid' : 'outline'} onClick={onStartChat} disabled={!selectedCustomerId || startDisabled || disabled}>
         {starting ? 'Starting…' : continueCase ? 'Continue this case' : 'Start new chat'}
       </Button>
     </div>
