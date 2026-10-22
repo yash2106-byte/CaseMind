@@ -18,7 +18,7 @@ export function formatCurrency(value: number): string {
 }
 
 export function formatPercent(value: number, digits = 1): string {
-  return `${value.toFixed(digits)}%`
+  return `${value.toFixed(digits).replace(/\.0+$/, '')}%`
 }
 
 export function formatCount(value: number): string {
