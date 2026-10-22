@@ -1,0 +1,17 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Start CaseMind dashboard",
+			"type": "shell",
+			"command": "cmd.exe",
+			"args": [
+				"/c",
+				"set \"PATH=C:\\Program Files\\nodejs;%PATH%\" && npm run dev"
+			],
+			"isBackground": true,
+			"problemMatcher": [],
+			"group": "build"
+		}
+	]
+}
