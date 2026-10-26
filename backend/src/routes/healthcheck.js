@@ -1,3 +1,7 @@
-import web from "../web.js";
+import { Router } from "express"
+import { healthcheck } from "../controllers/healthcheck_controller.js"
 
-web.get("/")
+const healthcheckrouter = Router()
+healthcheckrouter.route("/health").get(healthcheck)
+
+export default healthcheckrouter
