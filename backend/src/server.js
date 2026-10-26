@@ -1,14 +1,25 @@
-import web from "./web.js";
 import dotenv from "dotenv";
+import web from "./web.js";
 import healthcheckrouter from "./routes/healthcheck.js";
+import { ApiError } from "./lib/Api_error.js";
+import errorHandler from "./middleware/errorHandler.js";
+
 dotenv.config({ path: "./config/.env" });
 
 const PORT = process.env.PORT || 8000;
 
+// Register routes first
+web.use("/api/v1", healthcheckrouter);
 
-
-web.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+// Catch unknown routes
+web.use((req, res, next) => {
+    next(ApiError.notFound(`Route ${req.originalUrl} not found`));
 });
 
-web.use("/api/v1",healthcheckrouter)
+// Handle errors centrally
+web.use(errorHandler);
+
+// Start server
+web.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+});
