@@ -1,0 +1,9 @@
+Run the demo: Copy .env.example to .env, then run npm run dev. The example enables VITE_DEMO_MODE=true; no backend is needed.
+
+Walkthrough: Aarav starts with a router restart recommendation; report it failed to see the cable check, or succeeded to resolve the case. Priya’s prior failed restart remains in history and her current recommendation is the cable check; starting another chat increments her contact count and a third contact escalates her case. Rohan’s case shows the simulated handoff and failed action history, with no active recommendation or ability to resume automated troubleshooting. Use Reset demo on Overview and confirm to restore the seed state.
+
+To use the real API later, set VITE_DEMO_MODE=false and configure VITE_API_BASE_URL in .env, start the backend, and restart Vite.
+
+Verification: npm test passed (29 tests across 3 files). npm run build passed, including TypeScript checking; a separate build with VITE_DEMO_MODE=true also passed. I exercised the demo in a local browser: dashboard data loaded without a backend error, an action failure advanced to the next step, the escalated case had no action controls, and reset restored the initial recommendation. git diff --check passed. There is no lint script in package.json, so lint was not run.
+
+Limitations: Demo state is in memory and resets on a full page reload. Responses and external-operation notices are simulations, not live AI or ISP/technician actions. Real API behavior was tested through the existing mocked tests, not against a running backend.
