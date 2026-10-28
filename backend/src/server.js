@@ -3,6 +3,8 @@ import web from "./web.js";
 import healthcheckrouter from "./routes/healthcheck.js";
 import { ApiError } from "./lib/Api_error.js";
 import errorHandler from "./middleware/errorHandler.js";
+import jsonErrorHandler from "./middleware/jsonErrorHandler.js";
+
 
 dotenv.config({ path: "./config/.env" });
 
@@ -10,6 +12,9 @@ const PORT = process.env.PORT || 8000;
 
 // Register routes first
 web.use("/api/v1", healthcheckrouter);
+
+// Check for any Invalid json
+web.use(jsonErrorHandler)
 
 // Catch unknown routes
 web.use((req, res, next) => {

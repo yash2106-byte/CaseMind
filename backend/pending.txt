@@ -1,0 +1,2 @@
+feature from phase 0 
+[ ] npm test runs without starting a server
