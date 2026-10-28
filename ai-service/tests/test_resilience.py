@@ -8,6 +8,7 @@ Tests:
 """
 
 import os
+import pytest
 from unittest.mock import AsyncMock, patch
 from fastapi.testclient import TestClient
 
