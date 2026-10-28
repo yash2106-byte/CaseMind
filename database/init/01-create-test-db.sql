@@ -1,0 +1,1 @@
+CREATE DATABASE case_mind_test;
