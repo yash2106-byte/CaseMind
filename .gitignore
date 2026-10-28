@@ -1,0 +1,12 @@
+# Environment variables and secrets
+.env
+.env.*
+!.env.example
+backend/config/.env
+
+# Node.js dependencies
+**/node_modules/
+
+# Temporary files
+backend/pending.txt
+
