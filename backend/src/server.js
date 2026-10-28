@@ -6,7 +6,7 @@ import errorHandler from "./middleware/errorHandler.js";
 
 dotenv.config({ path: "./config/.env" });
 
-const PORT = process.env.PORT || 8000;
+const PORT = process.env.PORT || 3000;
 
 // Register routes first
 web.use("/api/v1", healthcheckrouter);

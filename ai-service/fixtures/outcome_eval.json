@@ -1,0 +1,105 @@
+[
+  {
+    "message": "I tried it; still no internet.",
+    "currentStepKey": "router_power_cycle",
+    "expected_outcome": "failed"
+  },
+  {
+    "message": "Restarted the modem but nothing changed, still down.",
+    "currentStepKey": "router_power_cycle",
+    "expected_outcome": "failed"
+  },
+  {
+    "message": "I checked the cables and they are fine, but connection is still not working.",
+    "currentStepKey": "check_cables_lights",
+    "expected_outcome": "failed"
+  },
+  {
+    "message": "Did the reset step, didn't help at all.",
+    "currentStepKey": "remote_line_reset",
+    "expected_outcome": "failed"
+  },
+  {
+    "message": "Tested another device on ethernet, still can't browse any sites.",
+    "currentStepKey": "test_another_device",
+    "expected_outcome": "failed"
+  },
+  {
+    "message": "No luck after turning it off and on, still broken.",
+    "currentStepKey": "router_power_cycle",
+    "expected_outcome": "failed"
+  },
+
+  {
+    "message": "It works now and I can open websites.",
+    "currentStepKey": "router_power_cycle",
+    "expected_outcome": "succeeded"
+  },
+  {
+    "message": "The internet is back online! Thank you so much.",
+    "currentStepKey": "router_power_cycle",
+    "expected_outcome": "succeeded"
+  },
+  {
+    "message": "Plugging in the cable fixed it, everything is working again.",
+    "currentStepKey": "check_cables_lights",
+    "expected_outcome": "succeeded"
+  },
+  {
+    "message": "Yes it worked, problem solved!",
+    "currentStepKey": "router_power_cycle",
+    "expected_outcome": "succeeded"
+  },
+  {
+    "message": "All green lights now and speed is back to normal.",
+    "currentStepKey": "check_cables_lights",
+    "expected_outcome": "succeeded"
+  },
+
+  {
+    "message": "The lights are different, but I haven't tested it.",
+    "currentStepKey": "router_power_cycle",
+    "expected_outcome": "unknown"
+  },
+  {
+    "message": "I did it but I'm not sure if it changed anything yet.",
+    "currentStepKey": "router_power_cycle",
+    "expected_outcome": "unknown"
+  },
+  {
+    "message": "I turned it off and on.",
+    "currentStepKey": "router_power_cycle",
+    "expected_outcome": "unknown"
+  },
+  {
+    "message": "I looked at the cables, hard to tell if one is damaged.",
+    "currentStepKey": "check_cables_lights",
+    "expected_outcome": "unknown"
+  },
+  {
+    "message": "I tested on my phone, seems maybe a bit faster, can't tell.",
+    "currentStepKey": "test_another_device",
+    "expected_outcome": "unknown"
+  },
+
+  {
+    "message": "Can you explain why this step helps?",
+    "currentStepKey": "router_power_cycle",
+    "expected_outcome": "not_provided"
+  },
+  {
+    "message": "Where is the power button located on the router?",
+    "currentStepKey": "router_power_cycle",
+    "expected_outcome": "not_provided"
+  },
+  {
+    "message": "Is there a technician who can come to my house?",
+    "currentStepKey": "check_cables_lights",
+    "expected_outcome": "not_provided"
+  },
+  {
+    "message": "I will do that later tonight when I get back home.",
+    "currentStepKey": "router_power_cycle",
+    "expected_outcome": "not_provided"
+  }
+]

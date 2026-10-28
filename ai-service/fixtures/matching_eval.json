@@ -1,0 +1,605 @@
+{
+  "test_cases": [
+    {
+      "message": "Same internet issue as yesterday.",
+      "candidates": [
+        {
+          "caseId": "case-001",
+          "title": "Internet connection not working",
+          "problemSummary": "Customer reports no internet access.",
+          "status": "in_progress",
+          "lastContactAt": "2026-10-18T00:00:00Z",
+          "failedStepKeys": ["router_power_cycle"]
+        }
+      ],
+      "expect_match": true,
+      "expected_case_id": "case-001"
+    },
+    {
+      "message": "Still no connection after I restarted it.",
+      "candidates": [
+        {
+          "caseId": "case-001",
+          "title": "Internet connection not working",
+          "problemSummary": "Customer reports Wi-Fi disconnects.",
+          "status": "in_progress",
+          "lastContactAt": "2026-10-18T00:00:00Z",
+          "failedStepKeys": ["router_power_cycle"]
+        }
+      ],
+      "expect_match": true,
+      "expected_case_id": "case-001"
+    },
+    {
+      "message": "My Wi-Fi is still down like before.",
+      "candidates": [
+        {
+          "caseId": "case-002",
+          "title": "Wi-Fi down",
+          "problemSummary": "Wi-Fi is completely down and unreachable.",
+          "status": "in_progress",
+          "lastContactAt": "2026-10-18T00:00:00Z",
+          "failedStepKeys": []
+        }
+      ],
+      "expect_match": true,
+      "expected_case_id": "case-002"
+    },
+    {
+      "message": "The broadband problem came back.",
+      "candidates": [
+        {
+          "caseId": "case-003",
+          "title": "Broadband problem",
+          "problemSummary": "Broadband service intermittent.",
+          "status": "in_progress",
+          "lastContactAt": "2026-10-18T00:00:00Z",
+          "failedStepKeys": []
+        }
+      ],
+      "expect_match": true,
+      "expected_case_id": "case-003"
+    },
+    {
+      "message": "It is happening again with the connection dropping.",
+      "candidates": [
+        {
+          "caseId": "case-004",
+          "title": "Connection dropping",
+          "problemSummary": "Customer reports connection dropping frequently.",
+          "status": "in_progress",
+          "lastContactAt": "2026-10-18T00:00:00Z",
+          "failedStepKeys": []
+        }
+      ],
+      "expect_match": true,
+      "expected_case_id": "case-004"
+    },
+    {
+      "message": "My internet is still not fixed.",
+      "candidates": [
+        {
+          "caseId": "case-005",
+          "title": "Internet connection not working",
+          "problemSummary": "Customer has no internet.",
+          "status": "in_progress",
+          "lastContactAt": "2026-10-18T00:00:00Z",
+          "failedStepKeys": []
+        }
+      ],
+      "expect_match": true,
+      "expected_case_id": "case-005"
+    },
+    {
+      "message": "Continuing my previous ticket about the router blinking red.",
+      "candidates": [
+        {
+          "caseId": "case-006",
+          "title": "Router blinking red",
+          "problemSummary": "Router indicator light is flashing red.",
+          "status": "in_progress",
+          "lastContactAt": "2026-10-18T00:00:00Z",
+          "failedStepKeys": []
+        }
+      ],
+      "expect_match": true,
+      "expected_case_id": "case-006"
+    },
+    {
+      "message": "Still having the same network problem from this morning.",
+      "candidates": [
+        {
+          "caseId": "case-007",
+          "title": "Network problem",
+          "problemSummary": "Network offline for home user.",
+          "status": "in_progress",
+          "lastContactAt": "2026-10-18T00:00:00Z",
+          "failedStepKeys": []
+        }
+      ],
+      "expect_match": true,
+      "expected_case_id": "case-007"
+    },
+    {
+      "message": "My fiber connection is still down.",
+      "candidates": [
+        {
+          "caseId": "case-008",
+          "title": "Fiber connection down",
+          "problemSummary": "Fiber line has no internet signal.",
+          "status": "in_progress",
+          "lastContactAt": "2026-10-18T00:00:00Z",
+          "failedStepKeys": []
+        }
+      ],
+      "expect_match": true,
+      "expected_case_id": "case-008"
+    },
+    {
+      "message": "The slow internet speeds are recurring again.",
+      "candidates": [
+        {
+          "caseId": "case-009",
+          "title": "Slow internet speeds",
+          "problemSummary": "Customer speed is under 1 Mbps.",
+          "status": "in_progress",
+          "lastContactAt": "2026-10-18T00:00:00Z",
+          "failedStepKeys": []
+        }
+      ],
+      "expect_match": true,
+      "expected_case_id": "case-009"
+    },
+    {
+      "message": "Still getting disconnected every few minutes like yesterday.",
+      "candidates": [
+        {
+          "caseId": "case-010",
+          "title": "Frequent disconnects",
+          "problemSummary": "Customer disconnects every 5 minutes.",
+          "status": "in_progress",
+          "lastContactAt": "2026-10-18T00:00:00Z",
+          "failedStepKeys": []
+        }
+      ],
+      "expect_match": true,
+      "expected_case_id": "case-010"
+    },
+    {
+      "message": "Still no internet access on my home network.",
+      "candidates": [
+        {
+          "caseId": "case-011",
+          "title": "No internet access",
+          "problemSummary": "No internet access on home devices.",
+          "status": "in_progress",
+          "lastContactAt": "2026-10-18T00:00:00Z",
+          "failedStepKeys": []
+        }
+      ],
+      "expect_match": true,
+      "expected_case_id": "case-011"
+    },
+    {
+      "message": "The DNS failure issue is still not resolved.",
+      "candidates": [
+        {
+          "caseId": "case-012",
+          "title": "DNS failure",
+          "problemSummary": "Browser reports DNS probe finished no internet.",
+          "status": "in_progress",
+          "lastContactAt": "2026-10-18T00:00:00Z",
+          "failedStepKeys": []
+        }
+      ],
+      "expect_match": true,
+      "expected_case_id": "case-012"
+    },
+    {
+      "message": "Still can't browse the web after checking cables.",
+      "candidates": [
+        {
+          "caseId": "case-013",
+          "title": "Cannot browse web",
+          "problemSummary": "Web browsing fails on all sites.",
+          "status": "in_progress",
+          "lastContactAt": "2026-10-18T00:00:00Z",
+          "failedStepKeys": ["check_cables_lights"]
+        }
+      ],
+      "expect_match": true,
+      "expected_case_id": "case-013"
+    },
+    {
+      "message": "Same issue with the modem lights not turning green.",
+      "candidates": [
+        {
+          "caseId": "case-014",
+          "title": "Modem lights issue",
+          "problemSummary": "Modem lights remain orange.",
+          "status": "in_progress",
+          "lastContactAt": "2026-10-18T00:00:00Z",
+          "failedStepKeys": []
+        }
+      ],
+      "expect_match": true,
+      "expected_case_id": "case-014"
+    },
+    {
+      "message": "Following up on my open ticket about no Wi-Fi.",
+      "candidates": [
+        {
+          "caseId": "case-015",
+          "title": "No Wi-Fi",
+          "problemSummary": "Customer reports Wi-Fi is unavailable.",
+          "status": "in_progress",
+          "lastContactAt": "2026-10-18T00:00:00Z",
+          "failedStepKeys": []
+        }
+      ],
+      "expect_match": true,
+      "expected_case_id": "case-015"
+    },
+    {
+      "message": "Still experiencing high packet loss like before.",
+      "candidates": [
+        {
+          "caseId": "case-016",
+          "title": "High packet loss",
+          "problemSummary": "Severe packet loss on broadband line.",
+          "status": "in_progress",
+          "lastContactAt": "2026-10-18T00:00:00Z",
+          "failedStepKeys": []
+        }
+      ],
+      "expect_match": true,
+      "expected_case_id": "case-016"
+    },
+    {
+      "message": "The internet dropped again just now.",
+      "candidates": [
+        {
+          "caseId": "case-017",
+          "title": "Internet dropped",
+          "problemSummary": "Connection drops abruptly.",
+          "status": "in_progress",
+          "lastContactAt": "2026-10-18T00:00:00Z",
+          "failedStepKeys": []
+        }
+      ],
+      "expect_match": true,
+      "expected_case_id": "case-017"
+    },
+    {
+      "message": "Still having trouble connecting my ethernet devices.",
+      "candidates": [
+        {
+          "caseId": "case-018",
+          "title": "Ethernet connection issue",
+          "problemSummary": "Ethernet ports not giving internet.",
+          "status": "in_progress",
+          "lastContactAt": "2026-10-18T00:00:00Z",
+          "failedStepKeys": []
+        }
+      ],
+      "expect_match": true,
+      "expected_case_id": "case-018"
+    },
+    {
+      "message": "My broadband outage is still ongoing.",
+      "candidates": [
+        {
+          "caseId": "case-019",
+          "title": "Broadband outage",
+          "problemSummary": "Outage in customer home broadband.",
+          "status": "in_progress",
+          "lastContactAt": "2026-10-18T00:00:00Z",
+          "failedStepKeys": []
+        }
+      ],
+      "expect_match": true,
+      "expected_case_id": "case-019"
+    },
+
+    {
+      "message": "My mobile data is slow, but home Wi-Fi works.",
+      "candidates": [
+        {
+          "caseId": "case-101",
+          "title": "Internet connection not working",
+          "problemSummary": "Customer reports home broadband is down.",
+          "status": "in_progress",
+          "lastContactAt": "2026-10-18T00:00:00Z",
+          "failedStepKeys": []
+        }
+      ],
+      "expect_match": false,
+      "expected_case_id": null
+    },
+    {
+      "message": "The router's delivery is late.",
+      "candidates": [
+        {
+          "caseId": "case-102",
+          "title": "Internet connection not working",
+          "problemSummary": "Customer reports no internet access.",
+          "status": "in_progress",
+          "lastContactAt": "2026-10-18T00:00:00Z",
+          "failedStepKeys": []
+        }
+      ],
+      "expect_match": false,
+      "expected_case_id": null
+    },
+    {
+      "message": "I want to pay my monthly internet bill.",
+      "candidates": [
+        {
+          "caseId": "case-103",
+          "title": "Broadband down",
+          "problemSummary": "Broadband completely disconnected.",
+          "status": "in_progress",
+          "lastContactAt": "2026-10-18T00:00:00Z",
+          "failedStepKeys": []
+        }
+      ],
+      "expect_match": false,
+      "expected_case_id": null
+    },
+    {
+      "message": "Can I upgrade my subscription plan?",
+      "candidates": [
+        {
+          "caseId": "case-104",
+          "title": "Slow internet speeds",
+          "problemSummary": "Speeds slower than advertised.",
+          "status": "in_progress",
+          "lastContactAt": "2026-10-18T00:00:00Z",
+          "failedStepKeys": []
+        }
+      ],
+      "expect_match": false,
+      "expected_case_id": null
+    },
+    {
+      "message": "My iPhone screen is cracked and unresponsive.",
+      "candidates": [
+        {
+          "caseId": "case-105",
+          "title": "Wi-Fi down",
+          "problemSummary": "Wi-Fi not accessible.",
+          "status": "in_progress",
+          "lastContactAt": "2026-10-18T00:00:00Z",
+          "failedStepKeys": []
+        }
+      ],
+      "expect_match": false,
+      "expected_case_id": null
+    },
+    {
+      "message": "How do I return the old rented equipment?",
+      "candidates": [
+        {
+          "caseId": "case-106",
+          "title": "Modem not working",
+          "problemSummary": "Modem won't power on.",
+          "status": "in_progress",
+          "lastContactAt": "2026-10-18T00:00:00Z",
+          "failedStepKeys": []
+        }
+      ],
+      "expect_match": false,
+      "expected_case_id": null
+    },
+    {
+      "message": "I need to change my billing address on the account.",
+      "candidates": [
+        {
+          "caseId": "case-107",
+          "title": "Network outage",
+          "problemSummary": "Customer in area outage.",
+          "status": "in_progress",
+          "lastContactAt": "2026-10-18T00:00:00Z",
+          "failedStepKeys": []
+        }
+      ],
+      "expect_match": false,
+      "expected_case_id": null
+    },
+    {
+      "message": "My printer won't connect to Bluetooth.",
+      "candidates": [
+        {
+          "caseId": "case-108",
+          "title": "Internet connectivity problem",
+          "problemSummary": "Broadband connection dropped.",
+          "status": "in_progress",
+          "lastContactAt": "2026-10-18T00:00:00Z",
+          "failedStepKeys": []
+        }
+      ],
+      "expect_match": false,
+      "expected_case_id": null
+    },
+    {
+      "message": "What time does your store open tomorrow?",
+      "candidates": [
+        {
+          "caseId": "case-109",
+          "title": "Internet down",
+          "problemSummary": "No connection at all.",
+          "status": "in_progress",
+          "lastContactAt": "2026-10-18T00:00:00Z",
+          "failedStepKeys": []
+        }
+      ],
+      "expect_match": false,
+      "expected_case_id": null
+    },
+    {
+      "message": "My microwave keeps tripping the power breaker.",
+      "candidates": [
+        {
+          "caseId": "case-110",
+          "title": "Router power failure",
+          "problemSummary": "Router power supply intermittent.",
+          "status": "in_progress",
+          "lastContactAt": "2026-10-18T00:00:00Z",
+          "failedStepKeys": []
+        }
+      ],
+      "expect_match": false,
+      "expected_case_id": null
+    },
+    {
+      "message": "I forgot my Netflix login password.",
+      "candidates": [
+        {
+          "caseId": "case-111",
+          "title": "Internet connection not working",
+          "problemSummary": "Customer reports no internet.",
+          "status": "in_progress",
+          "lastContactAt": "2026-10-18T00:00:00Z",
+          "failedStepKeys": []
+        }
+      ],
+      "expect_match": false,
+      "expected_case_id": null
+    },
+    {
+      "message": "Can you recommend a good movie to watch tonight?",
+      "candidates": [
+        {
+          "caseId": "case-112",
+          "title": "Wi-Fi issue",
+          "problemSummary": "Wi-Fi disconnected.",
+          "status": "in_progress",
+          "lastContactAt": "2026-10-18T00:00:00Z",
+          "failedStepKeys": []
+        }
+      ],
+      "expect_match": false,
+      "expected_case_id": null
+    },
+    {
+      "message": "My car key fob battery died.",
+      "candidates": [
+        {
+          "caseId": "case-113",
+          "title": "Broadband issue",
+          "problemSummary": "Broadband down.",
+          "status": "in_progress",
+          "lastContactAt": "2026-10-18T00:00:00Z",
+          "failedStepKeys": []
+        }
+      ],
+      "expect_match": false,
+      "expected_case_id": null
+    },
+    {
+      "message": "I am traveling in France and need a local SIM card.",
+      "candidates": [
+        {
+          "caseId": "case-114",
+          "title": "Home internet disconnected",
+          "problemSummary": "Home fiber disconnected.",
+          "status": "in_progress",
+          "lastContactAt": "2026-10-18T00:00:00Z",
+          "failedStepKeys": []
+        }
+      ],
+      "expect_match": false,
+      "expected_case_id": null
+    },
+    {
+      "message": "Can I speak to someone in human resources?",
+      "candidates": [
+        {
+          "caseId": "case-115",
+          "title": "Internet connection not working",
+          "problemSummary": "No internet access.",
+          "status": "in_progress",
+          "lastContactAt": "2026-10-18T00:00:00Z",
+          "failedStepKeys": []
+        }
+      ],
+      "expect_match": false,
+      "expected_case_id": null
+    },
+    {
+      "message": "Where can I find the terms and conditions document?",
+      "candidates": [
+        {
+          "caseId": "case-116",
+          "title": "Network problem",
+          "problemSummary": "Network not connecting.",
+          "status": "in_progress",
+          "lastContactAt": "2026-10-18T00:00:00Z",
+          "failedStepKeys": []
+        }
+      ],
+      "expect_match": false,
+      "expected_case_id": null
+    },
+    {
+      "message": "My computer monitor won't turn on.",
+      "candidates": [
+        {
+          "caseId": "case-117",
+          "title": "Router not working",
+          "problemSummary": "Router has no power.",
+          "status": "in_progress",
+          "lastContactAt": "2026-10-18T00:00:00Z",
+          "failedStepKeys": []
+        }
+      ],
+      "expect_match": false,
+      "expected_case_id": null
+    },
+    {
+      "message": "Can you cancel my appointment for tomorrow?",
+      "candidates": [
+        {
+          "caseId": "case-118",
+          "title": "Technician visit booked",
+          "problemSummary": "Customer awaiting technician.",
+          "status": "in_progress",
+          "lastContactAt": "2026-10-18T00:00:00Z",
+          "failedStepKeys": []
+        }
+      ],
+      "expect_match": false,
+      "expected_case_id": null
+    },
+    {
+      "message": "I want to file a complaint about poor customer service.",
+      "candidates": [
+        {
+          "caseId": "case-119",
+          "title": "Internet outage",
+          "problemSummary": "Area internet outage.",
+          "status": "in_progress",
+          "lastContactAt": "2026-10-18T00:00:00Z",
+          "failedStepKeys": []
+        }
+      ],
+      "expect_match": false,
+      "expected_case_id": null
+    },
+    {
+      "message": "Do you offer television cable channels?",
+      "candidates": [
+        {
+          "caseId": "case-120",
+          "title": "Slow internet",
+          "problemSummary": "Broadband slow speed.",
+          "status": "in_progress",
+          "lastContactAt": "2026-10-18T00:00:00Z",
+          "failedStepKeys": []
+        }
+      ],
+      "expect_match": false,
+      "expected_case_id": null
+    }
+  ]
+}
