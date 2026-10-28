@@ -4,6 +4,8 @@ import healthcheckrouter from "./routes/healthcheck.js";
 import { ApiError } from "./lib/Api_error.js";
 import errorHandler from "./middleware/errorHandler.js";
 import jsonErrorHandler from "./middleware/jsonErrorHandler.js";
+import { pool } from "./db/pool.js";
+
 
 
 dotenv.config({ path: "./config/.env" });
@@ -25,6 +27,13 @@ web.use((req, res, next) => {
 web.use(errorHandler);
 
 // Start server
-web.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
+async function start() {
+  await pool.query('SELECT 1');
+  console.log('Database connected');
+  web.listen(PORT, () => console.log(`Server on ${PORT}`));
+}
+
+start().catch((err) => {
+  console.error('Startup failed:', err.message);
+  process.exit(1);
 });
